@@ -55,8 +55,7 @@ function App() {
         setIsLoading(true);
         const urls = [
           '/all_games.json',
-          'https://raw.githubusercontent.com/rhenryw/lupine/main/all_games.json',
-          'https://cdn.statically.io/gh/rhenryw/lupine/main/all_games.json'
+          'https://cdn.statically.io/gh/rhenryw/lupine/main/public/all_games.json'
         ];
         let data: any[] | null = null;
         let lastError: unknown = null;
