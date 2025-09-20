@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/rewrite-dist-cdn.cjs",
+    "build": "vite build && node scripts/rewrite-dist-cdn.cjs && node scripts/postbuild-move.cjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "local": "npm run build && serve dist"

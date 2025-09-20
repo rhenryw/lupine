@@ -18,6 +18,7 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About' },
     { id: 'movies', label: 'Movies' },
+    { id: 'tunnel', label: 'TunnelVision' },
     { id: 'settings', label: 'Settings' }
   ];
 

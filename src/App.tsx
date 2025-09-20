@@ -8,6 +8,7 @@ import Movies from './components/Movies';
 import GameModal from './components/GameModal.tsx';
 import Settings from './components/Settings';
 import MovieModal from './components/MovieModal.tsx';
+import TunnelVision from './components/TunnelVision';
 import { Game } from './types/game';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
     const v = localStorage.getItem('movieMaxRating') as any;
     return v === 'PG' || v === 'PG-13' || v === 'R' || v === 'ALL' ? v : 'PG-13';
   });
+  const [tvUseProxy, setTvUseProxy] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('tvUseProxy') === '1' : false));
 
   useEffect(() => {
     const controller = new AbortController();
@@ -201,6 +203,10 @@ function App() {
     try { localStorage.setItem('movieMaxRating', movieMaxRating); } catch {}
   }, [movieMaxRating]);
 
+  useEffect(() => {
+    try { localStorage.setItem('tvUseProxy', tvUseProxy ? '1' : '0'); } catch {}
+  }, [tvUseProxy]);
+
   const featuredGame = useMemo(() => {
     if (filteredGames.length === 0) return null;
     const idx = Math.floor(Math.random() * filteredGames.length);
@@ -213,8 +219,10 @@ function App() {
         return <About />;
       case 'movies':
         return <Movies maxRating={movieMaxRating} />;
+      case 'tunnel':
+        return <TunnelVision tvUseProxy={tvUseProxy} isActive={activeSection === 'tunnel'} />;
       case 'settings':
-        return <Settings tabTitle={tabTitle} setTabTitle={setTabTitle} useEmbeddr={useEmbeddr} setUseEmbeddr={setUseEmbeddr} movieMaxRating={movieMaxRating} setMovieMaxRating={setMovieMaxRating} />;
+        return <Settings tabTitle={tabTitle} setTabTitle={setTabTitle} useEmbeddr={useEmbeddr} setUseEmbeddr={setUseEmbeddr} movieMaxRating={movieMaxRating} setMovieMaxRating={setMovieMaxRating} tvUseProxy={tvUseProxy} setTvUseProxy={setTvUseProxy} />;
       default:
         return (
           <>
