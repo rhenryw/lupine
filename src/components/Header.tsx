@@ -22,7 +22,6 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <div 
             className="text-2xl font-bold cursor-pointer"
             onClick={() => setActiveSection('home')}
@@ -31,7 +30,6 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
             <span className="text-white">Vault</span>
           </div>
 
-          {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
             {navItems.map(item => (
               <button
@@ -48,7 +46,6 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
             ))}
           </nav>
 
-          {/* Search Bar - Desktop */}
           <div className="hidden md:block relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -60,7 +57,6 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
             />
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-white"
@@ -69,10 +65,8 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-gray-800">
-            {/* Mobile Search */}
             <div className="relative mt-4 mb-4">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -83,8 +77,6 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
                 className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-[#5E17EB] focus:ring-1 focus:ring-[#5E17EB] text-white placeholder-gray-400"
               />
             </div>
-
-            {/* Mobile Navigation */}
             <nav className="space-y-2">
               {navItems.map(item => (
                 <button

@@ -1,11 +1,10 @@
 export interface Game {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  image: string;
-  rating: number;
-  releaseDate: string;
-  genre: string;
-  category: string;
-  price: string;
+  instructions: string;
+  categories: string[];
+  imageSmall: string;
+  imageLarge: string;
+  iframeUrl: string;
 }
