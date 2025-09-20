@@ -1,0 +1,7 @@
+Form like so:
+
+https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/{gameid}/index.html?gd_sdk_referrer_url=https://lupine.red
+
+or
+
+https://embeddr.rhw.one/embed#https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/{gameid}}/index.html?gd_sdk_referrer_url=https://lupine.red
