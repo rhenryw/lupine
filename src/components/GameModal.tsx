@@ -5,10 +5,12 @@ import { Game } from '../types/game';
 interface Props {
   game: Game;
   onClose: () => void;
+  useEmbeddr?: boolean;
 }
 
-export default function GameModal({ game, onClose }: Props) {
+export default function GameModal({ game, onClose, useEmbeddr = true }: Props) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -18,16 +20,33 @@ export default function GameModal({ game, onClose }: Props) {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
+  const id = game.id;
+  const directUrl = id && /^[a-f0-9]{32}$/i.test(id)
+    ? `https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red`
+    : (game.sourceUrl || '');
+  const embedUrl = `https://embeddr.rhw.one/embed#${directUrl}`;
+  const src = useEmbeddr ? embedUrl : directUrl;
+
+  function requestFullscreen() {
+    const el = containerRef.current;
+    if (!el) return;
+    const anyEl = el as any;
+    (anyEl.requestFullscreen || anyEl.webkitRequestFullscreen || anyEl.mozRequestFullScreen || anyEl.msRequestFullscreen)?.call(anyEl);
+  }
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80">
-      <div className="relative w-full h-full md:h-[85vh] md:w-[90vw]">
-        <button onClick={onClose} className="absolute top-4 right-4 z-10 bg-gray-900/80 border border-gray-700 rounded-full p-2 text-white">
+      <div ref={containerRef} className="relative w-full h-full md:h-[85vh] md:w-[90vw] rounded-xl overflow-hidden">
+        <div className="absolute top-4 right-4 z-10 flex gap-2">
+          <button onClick={requestFullscreen} className="bg-gray-900/80 border border-gray-700 rounded-full px-3 py-2 text-white text-sm">Fullscreen</button>
+          <button onClick={onClose} className="bg-gray-900/80 border border-gray-700 rounded-full p-2 text-white">
           <X className="w-5 h-5" />
-        </button>
+          </button>
+        </div>
         <div className="w-full h-full grid grid-rows-[auto,1fr] md:grid-cols-[1fr,360px] md:grid-rows-1">
           <iframe
             ref={iframeRef}
-            src={game.iframeUrl}
+            src={src}
             title={game.title}
             allow="autoplay; fullscreen; gamepad"
             className="w-full h-full bg-black"

@@ -5,7 +5,9 @@ import GameCategories from './components/GameCategories';
 import GameGrid from './components/GameGrid';
 import About from './components/About';
 import Movies from './components/Movies';
-import GameModal from './components/GameModal';
+import GameModal from './components/GameModal.tsx';
+import Settings from './components/Settings';
+import MovieModal from './components/MovieModal.tsx';
 import { Game } from './types/game';
 
 function App() {
@@ -15,12 +17,20 @@ function App() {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [allGames, setAllGames] = useState<Game[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [tabTitle, setTabTitle] = useState<string>(() => (typeof window !== 'undefined' ? (localStorage.getItem('tabTitle') || 'LupineVault') : 'LupineVault'));
+  const [useEmbeddr, setUseEmbeddr] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('useEmbeddr') === '1' : true));
+  const [movieMaxRating, setMovieMaxRating] = useState<'PG' | 'PG-13' | 'R' | 'ALL'>(() => {
+    if (typeof window === 'undefined') return 'PG-13';
+    const v = localStorage.getItem('movieMaxRating') as any;
+    return v === 'PG' || v === 'PG-13' || v === 'R' || v === 'ALL' ? v : 'PG-13';
+  });
 
   useEffect(() => {
     const controller = new AbortController();
     let isCancelled = false;
     async function fetchFrom(url: string) {
-      const res = await fetch(url, { cache: 'force-cache', mode: 'cors', credentials: 'omit', signal: controller.signal, headers: { Accept: 'application/json' } });
+      const isLocal = url.startsWith('/');
+      const res = await fetch(url, { cache: isLocal ? 'no-cache' : 'force-cache', mode: 'cors', credentials: 'omit', signal: controller.signal, headers: { Accept: 'application/json' } });
       if (!res.ok) {
         const t = await res.text().catch(() => '');
         throw new Error(`Failed ${res.status}: ${t.slice(0, 200)}`);
@@ -44,10 +54,9 @@ function App() {
       try {
         setIsLoading(true);
         const urls = [
-          'https://cdn.jsdelivr.net/gh/rhenryw/lupine@main/all_games.json',
+          '/all_games.json',
           'https://raw.githubusercontent.com/rhenryw/lupine/main/all_games.json',
-          'https://cdn.statically.io/gh/rhenryw/lupine/main/all_games.json',
-          '/all_games.json'
+          'https://cdn.statically.io/gh/rhenryw/lupine/main/all_games.json'
         ];
         let data: any[] | null = null;
         let lastError: unknown = null;
@@ -66,17 +75,39 @@ function App() {
         if (!data) throw lastError || new Error('Unable to load data');
         if (isCancelled) return;
         const mapped: Game[] = (data as any[]).map((g) => {
-          const id = g.Md5 as string;
+          const md5 = (g.Md5 as string) || '';
+          const url = (g.Url as string) || '';
+          let id = md5;
+          if (!id && url) {
+            const m = url.match(/\/([a-f0-9]{32})\/?$/i) || url.match(/html5\.gamedistribution\.com\/([^\/]+)\/?/i);
+            id = m ? m[1] : '';
+          }
+          let imageSmall = id ? `https://img.gamedistribution.com/${id}-512x384.jpg` : '';
+          let imageLarge = id ? `https://img.gamedistribution.com/${id}-1280x720.jpg` : '';
+          const imgField = typeof g.Img === 'string' ? (g.Img as string) : '';
+          const assets = Array.isArray(g.Asset) ? (g.Asset as string[]) : [];
+          if (!id && imgField) {
+            imageSmall = imgField;
+            imageLarge = imgField;
+          } else if (!id && assets.length) {
+            const small = assets.find(a => /-512x384\.jpg$/i.test(a)) || assets[0];
+            const large = assets.find(a => /-1280x720\.jpg$/i.test(a)) || assets[assets.length - 1];
+            imageSmall = small || '';
+            imageLarge = large || imageSmall;
+          }
+          const directUrl = id ? `https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red` : url;
+          const iframeUrl = `https://embeddr.rhw.one/embed#${directUrl}`;
           return {
-            id,
+            id: id || url,
             title: g.Title as string,
             description: (g.Description as string) || '',
             instructions: (g.Instructions as string) || '',
             categories: Array.isArray(g.Category) ? g.Category as string[] : [],
-            imageSmall: `https://img.gamedistribution.com/${id}-512x384.jpg`,
-            imageLarge: `https://img.gamedistribution.com/${id}-1280x720.jpg`,
-            iframeUrl: `https://embeddr.rhw.one/embed#https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red`
-          };
+            imageSmall,
+            imageLarge,
+            iframeUrl,
+            sourceUrl: url || undefined
+          } as Game;
         });
         setAllGames(mapped);
       } catch (e) {
@@ -98,13 +129,19 @@ function App() {
   }, [allGames]);
 
   const filteredGames = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
     return allGames.filter((game) => {
-      const matchesSearch = !q || game.title.toLowerCase().includes(q) || game.description.toLowerCase().includes(q);
       const matchesCategory = selectedCategory === 'all' || game.categories.includes(selectedCategory);
-      return matchesSearch && matchesCategory;
+      return matchesCategory;
     });
-  }, [allGames, searchQuery, selectedCategory]);
+  }, [allGames, selectedCategory]);
+
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [] as Game[];
+    const byTitle = allGames.filter(g => g.title.toLowerCase().includes(q));
+    const byDesc = allGames.filter(g => !byTitle.includes(g) && g.description.toLowerCase().includes(q));
+    return [...byTitle, ...byDesc].slice(0, 20);
+  }, [allGames, searchQuery]);
 
   const handleGameClick = (game: Game) => {
     setSelectedGame(game);
@@ -113,6 +150,57 @@ function App() {
   const handleCloseModal = () => {
     setSelectedGame(null);
   };
+
+  const [movieSearchResults, setMovieSearchResults] = useState<{ id: number; title: string; imageSmall?: string }[]>([]);
+  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (activeSection !== 'movies') {
+      setMovieSearchResults([]);
+      return;
+    }
+    const q = searchQuery.trim();
+    if (q.length < 2) {
+      setMovieSearchResults([]);
+      return;
+    }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      try {
+        const url = new URL('https://api.themoviedb.org/3/search/movie');
+        url.searchParams.set('api_key', '2713804610e1e236b1cf44bfac3a7776');
+        url.searchParams.set('query', q);
+        url.searchParams.set('include_adult', 'false');
+        url.searchParams.set('language', 'en-US');
+        const res = await fetch(url.toString(), { cache: 'no-cache' });
+        const json = await res.json();
+        if (cancelled) return;
+        const results = Array.isArray(json.results) ? json.results : [];
+        const mapped = results.slice(0, 20).map((m: any) => ({
+          id: m.id as number,
+          title: (m.title || m.name || '').toString(),
+          imageSmall: m.poster_path ? `https://image.tmdb.org/t/p/w154${m.poster_path}` : undefined
+        }));
+        setMovieSearchResults(mapped);
+      } catch {
+        if (!cancelled) setMovieSearchResults([]);
+      }
+    }, 300);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [activeSection, searchQuery]);
+
+  useEffect(() => {
+    document.title = tabTitle;
+    try { localStorage.setItem('tabTitle', tabTitle); } catch {}
+  }, [tabTitle]);
+
+  useEffect(() => {
+    try { localStorage.setItem('useEmbeddr', useEmbeddr ? '1' : '0'); } catch {}
+  }, [useEmbeddr]);
+
+  useEffect(() => {
+    try { localStorage.setItem('movieMaxRating', movieMaxRating); } catch {}
+  }, [movieMaxRating]);
 
   const featuredGame = useMemo(() => {
     if (filteredGames.length === 0) return null;
@@ -125,7 +213,9 @@ function App() {
       case 'about':
         return <About />;
       case 'movies':
-        return <Movies />;
+        return <Movies maxRating={movieMaxRating} />;
+      case 'settings':
+        return <Settings tabTitle={tabTitle} setTabTitle={setTabTitle} useEmbeddr={useEmbeddr} setUseEmbeddr={setUseEmbeddr} movieMaxRating={movieMaxRating} setMovieMaxRating={setMovieMaxRating} />;
       default:
         return (
           <>
@@ -150,6 +240,8 @@ function App() {
         setActiveSection={setActiveSection}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        searchResults={activeSection === 'movies' ? (movieSearchResults as any) : (searchResults as any)}
+        onSelectSearchResult={activeSection === 'movies' ? ((m: any) => setSelectedMovieId(m.id)) : (handleGameClick as any)}
       />
       
       <main className="pt-20">
@@ -160,7 +252,11 @@ function App() {
         <GameModal 
           game={selectedGame}
           onClose={handleCloseModal}
+          useEmbeddr={useEmbeddr}
         />
+      )}
+      {selectedMovieId !== null && (
+        <MovieModal tmdbId={selectedMovieId} onClose={() => setSelectedMovieId(null)} />
       )}
       
       <footer className="bg-gray-900 border-t border-gray-800 py-8 mt-16">

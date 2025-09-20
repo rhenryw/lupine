@@ -65,16 +65,16 @@ export default function About() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               <div>
-                <div className="text-3xl font-bold text-[#5E17EB] mb-2">10M+</div>
+                <div className="text-3xl font-bold text-[#5E17EB] mb-2">5M+</div>
                 <p className="text-gray-400">Active Players</p>
               </div>
               <div>
-                <div className="text-3xl font-bold text-[#5E17EB] mb-2">50K+</div>
+                <div className="text-3xl font-bold text-[#5E17EB] mb-2">20K+</div>
                 <p className="text-gray-400">Games Available</p>
               </div>
               <div>
-                <div className="text-3xl font-bold text-[#5E17EB] mb-2">500+</div>
-                <p className="text-gray-400">Developer Partners</p>
+                <div className="text-3xl font-bold text-[#5E17EB] mb-2">Unlimited</div>
+                <p className="text-gray-400">Movies</p>
               </div>
             </div>
           </div>

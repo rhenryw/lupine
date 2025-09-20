@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star, Play } from 'lucide-react';
 import { Game } from '../types/game';
+import SafeImage from './SafeImage';
 
 interface Props {
   game: Game;
@@ -10,12 +11,10 @@ interface Props {
 export default function GameOfTheDay({ game, onPlay }: Props) {
   return (
     <section className="relative h-96 md:h-[500px] overflow-hidden">
-      <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(${game.imageLarge})`
-        }}
-      />
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-black/60 z-10" />
+        <SafeImage src={game.imageLarge} alt={game.title} className="w-full h-full object-cover" />
+      </div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 h-full flex items-center">
         <div className="max-w-2xl">
           <div className="flex items-center space-x-2 mb-4">

@@ -7,4 +7,5 @@ export interface Game {
   imageSmall: string;
   imageLarge: string;
   iframeUrl: string;
+  sourceUrl?: string;
 }
