@@ -29,7 +29,7 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
             className="cursor-pointer"
             onClick={() => setActiveSection('home')}
           >
-            <img src="/tinyTitle.png" alt="LupineVault" className="h-8 w-auto" />
+            <img src="https://cdn.jsdelivr.net/gh/rhenryw/lupine@main/public/tinyTitle.png" alt="LupineVault" className="h-8 w-auto" />
           </button>
 
           <nav className="hidden md:flex items-center space-x-8">
@@ -63,7 +63,7 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
                   {searchResults.map((g) => (
                     <li key={g.id}>
                       <button onClick={() => onSelectSearchResult && onSelectSearchResult(g)} className="w-full flex items-center gap-3 p-3 hover:bg-gray-900 text-left">
-                        {g.imageSmall ? (<img src={g.imageSmall} alt={g.title} className="w-12 h-9 object-cover rounded" loading="lazy" />) : (<img src="/tinyTitle.png" alt="No image" className="w-12 h-9 object-cover rounded" loading="lazy" />)}
+                        {g.imageSmall ? (<img src={g.imageSmall} alt={g.title} className="w-12 h-9 object-cover rounded" loading="lazy" />) : (<img src="https://cdn.jsdelivr.net/gh/rhenryw/lupine@main/public/tinyTitle.png" alt="No image" className="w-12 h-9 object-cover rounded" loading="lazy" />)}
                         <div>
                           <div className="text-sm font-medium">{g.title}</div>
                           {g.description && (<div className="text-xs text-gray-400 line-clamp-1">{g.description}</div>)}
@@ -101,7 +101,7 @@ export default function Header({ activeSection, setActiveSection, searchQuery, s
                     {searchResults.map((g) => (
                       <li key={g.id}>
                         <button onClick={() => { onSelectSearchResult && onSelectSearchResult(g); setIsMenuOpen(false); }} className="w-full flex items-center gap-3 p-3 hover:bg-gray-900 text-left">
-                          {g.imageSmall ? (<img src={g.imageSmall} alt={g.title} className="w-12 h-9 object-cover rounded" loading="lazy" />) : (<img src="/tinyTitle.png" alt="No image" className="w-12 h-9 object-cover rounded" loading="lazy" />)}
+                          {g.imageSmall ? (<img src={g.imageSmall} alt={g.title} className="w-12 h-9 object-cover rounded" loading="lazy" />) : (<img src="https://cdn.jsdelivr.net/gh/rhenryw/lupine@main/public/tinyTitle.png" alt="No image" className="w-12 h-9 object-cover rounded" loading="lazy" />)}
                           <div>
                             <div className="text-sm font-medium">{g.title}</div>
                             {g.description && (<div className="text-xs text-gray-400 line-clamp-1">{g.description}</div>)}

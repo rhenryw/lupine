@@ -18,7 +18,7 @@ export default function SafeImage({ src, alt, className, showFallbackCaption }: 
   }, [src]);
 
   function handleError() {
-    setCurrentSrc('/tinyTitle.png');
+    setCurrentSrc('https://cdn.jsdelivr.net/gh/rhenryw/lupine@main/public/tinyTitle.png');
     setIsFallback(true);
   }
 
@@ -45,7 +45,7 @@ export default function SafeImage({ src, alt, className, showFallbackCaption }: 
       }
       const avg = total / (w * h);
       if (avg < 8) {
-        setCurrentSrc('/tinyTitle.png');
+        setCurrentSrc('https://cdn.jsdelivr.net/gh/rhenryw/lupine@main/public/tinyTitle.png');
         setIsFallback(true);
       }
     } catch {}
