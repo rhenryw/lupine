@@ -28,10 +28,9 @@ export default function GameModal({ game, onClose, useEmbeddr = true }: Props) {
   const src = useEmbeddr ? embedUrl : directUrl;
 
   function requestFullscreen() {
-    const el = containerRef.current;
+    const el = iframeRef.current as any;
     if (!el) return;
-    const anyEl = el as any;
-    (anyEl.requestFullscreen || anyEl.webkitRequestFullscreen || anyEl.mozRequestFullScreen || anyEl.msRequestFullscreen)?.call(anyEl);
+    (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen)?.call(el);
   }
 
   return (

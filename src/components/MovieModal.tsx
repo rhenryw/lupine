@@ -8,8 +8,9 @@ interface Props {
 
 export default function MovieModal({ tmdbId, onClose }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   function requestFullscreen() {
-    const el = containerRef.current as any;
+    const el = iframeRef.current as any;
     el && (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen)?.call(el);
   }
   const src = `https://player.vidify.top/embed/movie/${tmdbId}?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&download=true&logourl=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FLupineVault%2Flupinevault.github.io%40main%2Fassets%2Fimages%2FtinyTitle.png&font=Roboto&fontcolor=5E17EB&fontsize=20&opacity=0.5&primarycolor=3b82f6&secondarycolor=1f2937&iconcolor=ffffff`;
@@ -22,7 +23,7 @@ export default function MovieModal({ tmdbId, onClose }: Props) {
             <X className="w-5 h-5" />
           </button>
         </div>
-        <iframe src={src} className="w-full h-full" allowFullScreen frameBorder={0} />
+        <iframe ref={iframeRef} src={src} className="w-full h-full" allowFullScreen frameBorder={0} />
       </div>
     </div>
   );
