@@ -36,10 +36,12 @@ if (html) {
     .replace(/<link[^>]*href="[^"]*assets\/[^"]+\.css"[^>]*>/g, `<link rel="stylesheet" href="${cdnCss}">`)
     .replace(/<link[^>]*href="\/assets\/index\.css"[^>]*>/g, `<link rel="stylesheet" href="${cdnCss}">`)
     .replace(/<link[^>]*rel="modulepreload"[^>]*href="[^"]*assets\/[^"]+\.js"[^>]*>/g, `<link rel="modulepreload" href="${cdnJs}">`);
-  fs.writeFileSync(path.join(downloadDir, 'download.txt'), html, 'utf8');
+  if (process.env.CREATE_DOWNLOAD_TXT === '1') {
+    fs.writeFileSync(path.join(downloadDir, 'download.txt'), html, 'utf8');
+  }
   fs.writeFileSync(indexHtmlPath, html, 'utf8');
 }
 
-console.log('Postbuild: assets moved to /assets and download.txt created.');
+console.log('Postbuild: assets moved to /assets' + (process.env.CREATE_DOWNLOAD_TXT === '1' ? ' and download.txt created.' : '.'));
 
 

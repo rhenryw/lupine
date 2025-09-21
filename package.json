@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/rewrite-dist-cdn.cjs && node scripts/postbuild-move.cjs",
+    "buildown": "CREATE_DOWNLOAD_TXT=1 vite build && node scripts/rewrite-dist-cdn.cjs && CREATE_DOWNLOAD_TXT=1 node scripts/postbuild-move.cjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "local": "npm run build && serve dist"
