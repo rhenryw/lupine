@@ -1,5 +1,6 @@
 # Lupine, a revolutionary game system
 
+<td><a target="_blank" href="https://discord.gg/XygZfmMM86"><img src="https://dcbadge.limes.pink/api/server/XygZfmMM86" alt="Join Discord!" /></a></td>
 Using NPM, Vite, HTML, CSS, JavaScript, and TypeScript you can have a fully 100% unblocked website with proxy, movies, and over 21,000 games!
 
 Just copy and paste:
