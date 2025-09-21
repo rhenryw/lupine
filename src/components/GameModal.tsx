@@ -6,9 +6,10 @@ interface Props {
   game: Game;
   onClose: () => void;
   useEmbeddr?: boolean;
+  securlyProtect?: boolean;
 }
 
-export default function GameModal({ game, onClose, useEmbeddr = true }: Props) {
+export default function GameModal({ game, onClose, useEmbeddr = true, securlyProtect = false }: Props) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -24,8 +25,9 @@ export default function GameModal({ game, onClose, useEmbeddr = true }: Props) {
   const directUrl = id && /^[a-f0-9]{32}$/i.test(id)
     ? `https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red`
     : (game.sourceUrl || '');
+  const maybeHashTranslate = (u: string) => (securlyProtect ? (u.includes('#') ? `${u}&translate.google.com` : `${u}#translate.google.com`) : u);
   const embedUrl = `https://embeddr.rhw.one/embed#${directUrl}`;
-  const src = useEmbeddr ? embedUrl : directUrl;
+  const src = useEmbeddr ? maybeHashTranslate(embedUrl) : maybeHashTranslate(directUrl);
 
   function requestFullscreen() {
     const el = iframeRef.current as any;

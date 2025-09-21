@@ -14,9 +14,9 @@ type TmdbMovie = {
 const TMDB_API_KEY = '2713804610e1e236b1cf44bfac3a7776';
 const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
 
-interface MoviesProps { maxRating?: 'PG' | 'PG-13' | 'R' | 'ALL' }
+interface MoviesProps { maxRating?: 'PG' | 'PG-13' | 'R' | 'ALL'; securlyProtect?: boolean }
 
-export default function Movies({ maxRating = 'ALL' }: MoviesProps) {
+export default function Movies({ maxRating = 'ALL', securlyProtect = false }: MoviesProps) {
   const [page, setPage] = useState(1);
   const [movies, setMovies] = useState<TmdbMovie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -74,6 +74,7 @@ export default function Movies({ maxRating = 'ALL' }: MoviesProps) {
     setPage(1);
   }, [maxRating]);
 
+  const maybeHashTranslate = (u: string) => (securlyProtect ? (u.includes('#') ? `${u}&translate.google.com` : `${u}#translate.google.com`) : u);
   const cards = useMemo(() => {
     const allowed = new Set<string>();
     if (maxRating === 'ALL') allowed.add('ALL');
@@ -84,7 +85,7 @@ export default function Movies({ maxRating = 'ALL' }: MoviesProps) {
       .map(m => ({
         id: m.id,
         title: m.title || m.name || 'Untitled',
-        poster: m.poster_path ? `${IMG_BASE}${m.poster_path}` : '',
+        poster: m.poster_path ? maybeHashTranslate(`${IMG_BASE}${m.poster_path}`) : '',
         year: m.release_date ? (m.release_date.split('-')[0] || '') : ''
       }))
       .filter(() => true);
@@ -137,7 +138,7 @@ export default function Movies({ maxRating = 'ALL' }: MoviesProps) {
       </div>
 
       {selectedId !== null && (
-        <MovieModal tmdbId={selectedId} onClose={() => setSelectedId(null)} />
+        <MovieModal tmdbId={selectedId} onClose={() => setSelectedId(null)} securlyProtect={securlyProtect} />
       )}
     </section>
   );

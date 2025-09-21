@@ -26,6 +26,13 @@ function App() {
     return v === 'PG' || v === 'PG-13' || v === 'R' || v === 'ALL' ? v : 'PG-13';
   });
   const [tvUseProxy, setTvUseProxy] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('tvUseProxy') === '1' : false));
+  const [securlyProtect, setSecurlyProtect] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    const v = localStorage.getItem('securlyProtect');
+    return v !== '0';
+  });
+
+  const maybeHashTranslate = (u: string) => (securlyProtect ? (u.includes('#') ? `${u}&translate.google.com` : `${u}#translate.google.com`) : u);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -57,7 +64,7 @@ function App() {
         setIsLoading(true);
         const urls = [
           '/all_games.json',
-          'https://cdn.statically.io/gh/rhenryw/lupine/main/public/all_games.json#translate.google.com'
+          maybeHashTranslate('https://cdn.statically.io/gh/rhenryw/lupine/main/public/all_games.json')
         ];
         let data: any[] | null = null;
         let lastError: unknown = null;
@@ -83,8 +90,8 @@ function App() {
             const m = url.match(/\/([a-f0-9]{32})\/?$/i) || url.match(/html5\.gamedistribution\.com\/([^\/]+)\/?/i);
             id = m ? m[1] : '';
           }
-          let imageSmall = id ? `https://img.gamedistribution.com/${id}-512x384.jpg#translate.google.com` : '';
-          let imageLarge = id ? `https://img.gamedistribution.com/${id}-1280x720.jpg#translate.google.com` : '';
+          let imageSmall = id ? maybeHashTranslate(`https://img.gamedistribution.com/${id}-512x384.jpg`) : '';
+          let imageLarge = id ? maybeHashTranslate(`https://img.gamedistribution.com/${id}-1280x720.jpg`) : '';
           const imgField = typeof g.Img === 'string' ? (g.Img as string) : '';
           const assets = Array.isArray(g.Asset) ? (g.Asset as string[]) : [];
           if (!id && imgField) {
@@ -96,8 +103,8 @@ function App() {
             imageSmall = small || '';
             imageLarge = large || imageSmall;
           }
-          const directUrl = id ? `https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red#translate.google.com` : url;
-          const iframeUrl = `https://embeddr.rhw.one/embed#${directUrl}#translate.google.com`;
+          const directUrl = id ? maybeHashTranslate(`https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red`) : maybeHashTranslate(url);
+          const iframeUrl = maybeHashTranslate(`https://embeddr.rhw.one/embed#${directUrl}`);
           return {
             id: id || url,
             title: g.Title as string,
@@ -207,6 +214,10 @@ function App() {
     try { localStorage.setItem('tvUseProxy', tvUseProxy ? '1' : '0'); } catch {}
   }, [tvUseProxy]);
 
+  useEffect(() => {
+    try { localStorage.setItem('securlyProtect', securlyProtect ? '1' : '0'); } catch {}
+  }, [securlyProtect]);
+
   const featuredGame = useMemo(() => {
     if (filteredGames.length === 0) return null;
     const idx = Math.floor(Math.random() * filteredGames.length);
@@ -222,7 +233,7 @@ function App() {
       case 'tunnel':
         return <TunnelVision tvUseProxy={tvUseProxy} isActive={activeSection === 'tunnel'} />;
       case 'settings':
-        return <Settings tabTitle={tabTitle} setTabTitle={setTabTitle} useEmbeddr={useEmbeddr} setUseEmbeddr={setUseEmbeddr} movieMaxRating={movieMaxRating} setMovieMaxRating={setMovieMaxRating} tvUseProxy={tvUseProxy} setTvUseProxy={setTvUseProxy} />;
+        return <Settings tabTitle={tabTitle} setTabTitle={setTabTitle} useEmbeddr={useEmbeddr} setUseEmbeddr={setUseEmbeddr} movieMaxRating={movieMaxRating} setMovieMaxRating={setMovieMaxRating} tvUseProxy={tvUseProxy} setTvUseProxy={setTvUseProxy} securlyProtect={securlyProtect} setSecurlyProtect={setSecurlyProtect} />;
       default:
         return (
           <>
@@ -260,10 +271,11 @@ function App() {
           game={selectedGame}
           onClose={handleCloseModal}
           useEmbeddr={useEmbeddr}
+          securlyProtect={securlyProtect}
         />
       )}
       {selectedMovieId !== null && (
-        <MovieModal tmdbId={selectedMovieId} onClose={() => setSelectedMovieId(null)} />
+        <MovieModal tmdbId={selectedMovieId} onClose={() => setSelectedMovieId(null)} securlyProtect={securlyProtect} />
       )}
       
       <footer className="bg-gray-900 border-t border-gray-800 py-8 mt-16">

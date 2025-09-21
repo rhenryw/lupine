@@ -3,9 +3,10 @@ import React, { useMemo, useState } from 'react';
 interface TunnelVisionProps {
   tvUseProxy: boolean;
   isActive: boolean;
+  securlyProtect?: boolean;
 }
 
-export default function TunnelVision({ tvUseProxy, isActive }: TunnelVisionProps) {
+export default function TunnelVision({ tvUseProxy, isActive, securlyProtect = false }: TunnelVisionProps) {
   const [urlInput, setUrlInput] = useState<string>(() => (typeof window !== 'undefined' ? (localStorage.getItem('tvUrlInput') || '') : ''));
   const [viewerUrl, setViewerUrl] = useState<string>(() => (typeof window !== 'undefined' ? (localStorage.getItem('tvViewerUrl') || '') : ''));
   const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(null);
@@ -16,8 +17,10 @@ export default function TunnelVision({ tvUseProxy, isActive }: TunnelVisionProps
     return u;
   }
 
+  function maybeHashTranslate(u: string) { return securlyProtect ? (u.includes('#') ? `${u}&translate.google.com` : `${u}#translate.google.com`) : u; }
   function applyProxy(u: string) {
-    return tvUseProxy ? `https://embeddr.rhw.one/embed#${u}` : u;
+    const proxied = tvUseProxy ? `https://embeddr.rhw.one/embed#${u}` : u;
+    return maybeHashTranslate(proxied);
   }
 
   function load(u: string) {
