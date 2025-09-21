@@ -57,7 +57,7 @@ function App() {
         setIsLoading(true);
         const urls = [
           '/all_games.json',
-          'https://cdn.statically.io/gh/rhenryw/lupine/main/public/all_games.json'
+          'https://cdn.statically.io/gh/rhenryw/lupine/main/public/all_games.json#translate.google.com'
         ];
         let data: any[] | null = null;
         let lastError: unknown = null;
@@ -83,8 +83,8 @@ function App() {
             const m = url.match(/\/([a-f0-9]{32})\/?$/i) || url.match(/html5\.gamedistribution\.com\/([^\/]+)\/?/i);
             id = m ? m[1] : '';
           }
-          let imageSmall = id ? `https://img.gamedistribution.com/${id}-512x384.jpg` : '';
-          let imageLarge = id ? `https://img.gamedistribution.com/${id}-1280x720.jpg` : '';
+          let imageSmall = id ? `https://img.gamedistribution.com/${id}-512x384.jpg#translate.google.com` : '';
+          let imageLarge = id ? `https://img.gamedistribution.com/${id}-1280x720.jpg#translate.google.com` : '';
           const imgField = typeof g.Img === 'string' ? (g.Img as string) : '';
           const assets = Array.isArray(g.Asset) ? (g.Asset as string[]) : [];
           if (!id && imgField) {
@@ -96,8 +96,8 @@ function App() {
             imageSmall = small || '';
             imageLarge = large || imageSmall;
           }
-          const directUrl = id ? `https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red` : url;
-          const iframeUrl = `https://embeddr.rhw.one/embed#${directUrl}`;
+          const directUrl = id ? `https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red#translate.google.com` : url;
+          const iframeUrl = `https://embeddr.rhw.one/embed#${directUrl}#translate.google.com`;
           return {
             id: id || url,
             title: g.Title as string,
