@@ -1,0 +1,47 @@
+all_games.json License v1.0
+Copyright (c) R. Henry Warren ("RHW"). All rights reserved.
+
+Preamble
+This license governs the use, reproduction, distribution, modification, sublicensing, and creation of derivative works of the file named "all_games.json" (the "File"). This license is intentionally restrictive: no person or entity may use the File except as explicitly authorized below.
+
+1. Copyright
+Copyright (c) RHW. All rights reserved.
+
+2. Definitions
+- "RHW": R. Henry Warren, the copyright holder.
+- "Authorized Person": a natural person or legal entity who has received explicit, written permission from RHW to use the File. Permission must specifically reference "all_games.json".
+- "Use": any action involving the File including, without limitation, copying, viewing, distributing, publishing, displaying, modifying, translating, sublicensing, embedding, linking, incorporating into other works, or otherwise exploiting the File or its contents.
+- "Accessible via web or internet": a copy of the File that can be reached, downloaded, viewed, or requested by a web browser or any internet service or protocol.
+
+3. Grant & Restrictions
+1. Exclusive control. Except as expressly provided in this license, no one may use the File in any manner.
+2. Authorized use. Only RHW and Authorized Persons may use the File.
+3. No implied licenses. Any rights not expressly granted are reserved by RHW.
+4. Prohibited acts. Without explicit written permission from RHW, the following are prohibited:
+   - Copying, downloading, hosting, embedding, or redistributing the File.
+   - Modifying, translating, or creating derivative works of the File.
+   - Using the File in software, services, datasets, or other works.
+   - Sublicensing or granting any rights to third parties.
+5. Exception — offline, non-internet copies. Restrictions in 3.4 do not apply to copies of the File that are not accessible through a web browser or internet means (i.e., only exist offline). This exception does not permit redistribution or internet access to such copies.
+6. Exception — applications. Applications (compiled programs, binaries, mobile apps, desktop apps, etc.) may include and use the File regardless of whether the File is accessible via the internet. This allowance does not grant permission to redistribute the raw File outside the application or to make it directly available on the internet without explicit written permission.
+7. No transfer of ownership. This license does not transfer ownership of the File or copyright.
+
+4. Notices
+Authorized Persons must retain the following notice with any permitted copy or use of the File:
+"Copyright (c) RHW. Used under explicit permission from R. Henry Warren."
+
+5. Enforcement
+Unauthorized use constitutes infringement and may subject the infringer to legal action. RHW reserves the right to revoke previously-granted permission in writing.
+
+6. Disclaimer
+The File is provided "AS IS," without warranty of any kind. RHW disclaims all warranties. In no event shall RHW be liable for damages of any kind arising from the use of the File.
+
+7. Governing Law
+This license is governed by the laws of the jurisdiction in which RHW is domiciled.
+
+8. Permission Requests
+Requests for permission must be made in writing to RHW. Permission is only granted when RHW provides explicit written authorization referencing "all_games.json" and the specific use allowed.
+
+---
+
+If you are not RHW and do not have explicit written permission from RHW to use "all_games.json", you may not use it in any way except as provided by Section 3.5 (offline, non-internet copies) or Section 3.6 (applications).
