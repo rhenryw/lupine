@@ -64,7 +64,7 @@ function App() {
         setIsLoading(true);
         const urls = [
           '/all_games.json',
-          maybeHashTranslate('https://cdn.statically.io/gh/rhenryw/lupine/f4b60ae222efc850c33fd2d60f2654330b48954c/public/all_games.json')
+          maybeHashTranslate('https://cdn.statically.io/gh/rhenryw/lupine/0453c38f1fbc06dba907d5b7e1aff7eda0f35eff/public/all_games.json')
         ];
         let data: any[] | null = null;
         let lastError: unknown = null;
