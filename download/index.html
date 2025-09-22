@@ -824,6 +824,7 @@ html {
 
   <script>
     const btn = document.getElementById("downloadBtn");
+    const injectBtn = document.getElementById("inject");
     const filenamePreview = document.getElementById("filenamePreview");
 
     function getFileName() {
@@ -855,7 +856,21 @@ html {
     }
 
     btn.addEventListener("click", downloadFile);
+    injectBtn.addEventListener("click", function() {
+      const win = window.open('about:blank', '_blank');
+      if (!win) return;
+      try { win.document.write('<!doctype html><title>Loading…</title><body style="background:#000;color:#fff;font-family:system-ui,Segoe UI,Arial,sans-serif"><div style="padding:20px">Loading…</div></body>'); } catch (e) {}
+      (async function() {
+        try {
+          const resp = await fetch("download.txt", { cache: 'no-cache' });
+          if (!resp.ok) throw new Error('download.txt not found');
+          const html = await resp.text();
+          win.document.open();
+          win.document.write(html);
+          win.document.close();
+        } catch (e) { try { win.close(); } catch (_) {} }
+      })();
+    });
   </script>
-  <script src="https://cdn.jsdelivr.net/gh/rhenryw/lupine-injector@684b0e85c172621064f6d3ed0cf8398c03eb7073/static/index.js"></script>
 </body>
 </html>
