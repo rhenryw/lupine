@@ -16,7 +16,7 @@ export default function MovieModal({ tmdbId, onClose, securlyProtect = false }: 
     el && (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen)?.call(el);
   }
   const mainBase = `https://player.vidify.top/embed/movie/${tmdbId}?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&download=true&logourl=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FLupineVault%2Flupinevault.github.io%40main%2Fassets%2Fimages%2FtinyTitle.png&font=Roboto&fontcolor=5E17EB&fontsize=20&opacity=0.5&primarycolor=3b82f6&secondarycolor=1f2937&iconcolor=ffffff`;
-  const adsBase = `https://embed.su/embed/movie/${tmdbId}`;
+  const adsBase = `https://vidsrc.icu/embed/movie/${tmdbId}`;
   const chosen = provider === 'main' ? mainBase : adsBase;
   const src = securlyProtect ? (chosen.includes('#') ? `${chosen}&translate.google.com` : `${chosen}#translate.google.com`) : chosen;
   return (
