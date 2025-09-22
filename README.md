@@ -14,3 +14,8 @@ npm install && npm run build
 then open `download/index.html` and download the html file (or rename `download.txt` to `whateveryouwant.html`)
 
 All code copyright © RHW and LupineVault. `all_games.json` © 2024 RHW, attribution must be given plainly, and license can be taken away at any time at RHW's discretion
+
+
+`all_games.json` Agreement
+---
+`all_games.json` is a precious file, and therefore is specially licensed as per the regulations in [all_games.json-LICENSE](https://github.com/rhenryw/lupine/blob/main/all_games.json-LICENSE)
