@@ -857,49 +857,11 @@ html {
 
     btn.addEventListener("click", downloadFile);
     injectBtn.addEventListener("click", () => {
-      const js = `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LupineVault - Reborn</title>
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <style>html,body{height:100%;margin:0;padding:0;background:#000}</style>
-</head>
-<body>
-  <div id="root"></div>
-  <script>(async function(){
-    try{
-      const res=await fetch("https://getcommit.rhenrywarren.workers.dev/");
-      if(!res.ok) throw new Error("GitHub API error "+res.status);
-      const data=await res.json();
-      const sha=data.sha;
-      const base="https://cdn.jsdelivr.net/gh/rhenryw/lupine@"+sha+"/assets";
-      var css=document.createElement("link");
-      css.rel="stylesheet";
-      css.href=base+"/index.css";
-      document.head.appendChild(css);
-      var s=document.createElement("script");
-      s.type="module";
-      s.src=base+"/index.js";
-      document.head.appendChild(s);
-    }catch(err){
-      console.error("Failed to load assets",err);
-      var msg=document.createElement("div");
-      msg.style.cssText="color:red;font-family:monospace;padding:10px;";
-      msg.textContent="Updater failed: "+err.message;
-      document.body.appendChild(msg);
-    }
-  })();<\/script>
-</body>
-</html>`;
-
-      const win = window.open();
-      if (win && win.document) {
-        win.document.open();
-        win.document.write(js);
-        win.document.close();
-      }
+          let js = `document.open();document.write('<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>LupineVault - Reborn</title><link rel="icon" type="image/x-icon" href="/favicon.ico"><style>html,body{height:100%;margin:0;padding:0;background:#000}</style></head><body><div id="root"></div><script>(async function(){ try{ const res=await fetch("https://getcommit.rhenrywarren.workers.dev/"); if(!res.ok) throw new Error("GitHub API error "+res.status); const data=await res.json(); const sha=data.sha; const base="https://cdn.jsdelivr.net/gh/rhenryw/lupine@"+sha+"/assets"; var css=document.createElement("link"); css.rel="stylesheet"; css.href=base+"/index.css"; document.head.appendChild(css); var s=document.createElement("script"); s.type="module"; s.src=base+"/index.js"; document.head.appendChild(s); }catch(err){ console.error("Failed to load assets",err); var msg=document.createElement("div"); msg.style.cssText="color:red;font-family:monospace;padding:10px;"; msg.textContent="Updater failed: "+err.message; document.body.appendChild(msg); } })();<\/script></body></html>');document.close();`
+          let win = window.open();
+          let script = win.document.createElement("script");
+          script.innerHTML = js;
+          win.document.body.appendChild(script);
     });
   </script>
 </body>
