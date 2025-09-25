@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Header from './components/Header';
 import GameOfTheDay from './components/GameOfTheDay';
 import GameCategories from './components/GameCategories';
@@ -33,6 +33,17 @@ function App() {
   });
   const [useSandstone, setUseSandstone] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('useSandstone') === '1' : false));
   const [tvUseProxy, setTvUseProxy] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('tvUseProxy') === '1' : false));
+  const [tvProxyType, setTvProxyType] = useState<'embeddr' | 'limestone'>(() => {
+    if (typeof window === 'undefined') return 'embeddr';
+    const v = localStorage.getItem('tvProxyType');
+    return v === 'limestone' ? 'limestone' : 'embeddr';
+  });
+  const [moviesUseProxy, setMoviesUseProxy] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('moviesUseProxy') === '1' : false));
+  const [moviesProxyType, setMoviesProxyType] = useState<'embeddr' | 'limestone'>(() => {
+    if (typeof window === 'undefined') return 'embeddr';
+    const v = localStorage.getItem('moviesProxyType');
+    return v === 'limestone' ? 'limestone' : 'embeddr';
+  });
   const [securlyProtect, setSecurlyProtect] = useState<boolean>(() => {
     if (typeof window === 'undefined') return true;
     const v = localStorage.getItem('securlyProtect');
@@ -230,6 +241,18 @@ function App() {
   }, [tvUseProxy]);
 
   useEffect(() => {
+    try { localStorage.setItem('tvProxyType', tvProxyType); } catch {}
+  }, [tvProxyType]);
+
+  useEffect(() => {
+    try { localStorage.setItem('moviesUseProxy', moviesUseProxy ? '1' : '0'); } catch {}
+  }, [moviesUseProxy]);
+
+  useEffect(() => {
+    try { localStorage.setItem('moviesProxyType', moviesProxyType); } catch {}
+  }, [moviesProxyType]);
+
+  useEffect(() => {
     try { localStorage.setItem('securlyProtect', securlyProtect ? '1' : '0'); } catch {}
   }, [securlyProtect]);
 
@@ -250,9 +273,9 @@ function App() {
       case 'about':
         return <About />;
       case 'movies':
-        return <Movies maxRating={movieMaxRating} />;
+        return <Movies maxRating={movieMaxRating} securlyProtect={securlyProtect} useProxy={moviesUseProxy} proxyType={moviesProxyType} />;
       case 'tunnel':
-        return <TunnelVision tvUseProxy={proxyEnabled} sandstoneProxy={proxyEnabled && proxyType === 'limestone'} isActive={activeSection === 'tunnel'} />;
+        return <TunnelVision tvUseProxy={tvUseProxy} tvProxyType={tvProxyType} isActive={activeSection === 'tunnel'} securlyProtect={securlyProtect} />;
       case 'settings':
         return (
           <Settings
@@ -270,6 +293,12 @@ function App() {
             setMovieMaxRating={setMovieMaxRating}
             tvUseProxy={tvUseProxy}
             setTvUseProxy={setTvUseProxy}
+            tvProxyType={tvProxyType}
+            setTvProxyType={setTvProxyType}
+            moviesUseProxy={moviesUseProxy}
+            setMoviesUseProxy={setMoviesUseProxy}
+            moviesProxyType={moviesProxyType}
+            setMoviesProxyType={setMoviesProxyType}
             securlyProtect={securlyProtect}
             setSecurlyProtect={setSecurlyProtect}
           />
@@ -316,7 +345,7 @@ function App() {
         />
       )}
       {selectedMovieId !== null && (
-        <MovieModal tmdbId={selectedMovieId} onClose={() => setSelectedMovieId(null)} securlyProtect={securlyProtect} />
+        <MovieModal tmdbId={selectedMovieId} onClose={() => setSelectedMovieId(null)} securlyProtect={securlyProtect} useProxy={moviesUseProxy} proxyType={moviesProxyType} />
       )}
       
       <footer className="bg-gray-900 border-t border-gray-800 py-8 mt-16">

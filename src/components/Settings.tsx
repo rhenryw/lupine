@@ -15,11 +15,17 @@ interface SettingsProps {
   setMovieMaxRating: (v: 'PG' | 'PG-13' | 'R' | 'ALL') => void;
   tvUseProxy: boolean;
   setTvUseProxy: (v: boolean) => void;
+  tvProxyType?: 'embeddr' | 'limestone';
+  setTvProxyType?: (v: 'embeddr' | 'limestone') => void;
+  moviesUseProxy?: boolean;
+  setMoviesUseProxy?: (v: boolean) => void;
+  moviesProxyType?: 'embeddr' | 'limestone';
+  setMoviesProxyType?: (v: 'embeddr' | 'limestone') => void;
   securlyProtect: boolean;
   setSecurlyProtect: (v: boolean) => void;
 }
 
-export default function Settings({ tabTitle, setTabTitle, useEmbeddr, setUseEmbeddr, useSandstone = false, setUseSandstone, proxyEnabled = false, setProxyEnabled, proxyType = 'embeddr', setProxyType, movieMaxRating, setMovieMaxRating, tvUseProxy, setTvUseProxy, securlyProtect, setSecurlyProtect }: SettingsProps) {
+export default function Settings({ tabTitle, setTabTitle, useEmbeddr, setUseEmbeddr, useSandstone = false, setUseSandstone, proxyEnabled = false, setProxyEnabled, proxyType = 'embeddr', setProxyType, movieMaxRating, setMovieMaxRating, tvUseProxy, setTvUseProxy, tvProxyType = 'embeddr', setTvProxyType, moviesUseProxy = false, setMoviesUseProxy, moviesProxyType = 'embeddr', setMoviesProxyType, securlyProtect, setSecurlyProtect }: SettingsProps) {
   const options: { key: 'PG' | 'PG-13' | 'R' | 'ALL'; label: string }[] = [
     { key: 'PG', label: 'PG' },
     { key: 'PG-13', label: 'PG-13' },
@@ -79,7 +85,7 @@ export default function Settings({ tabTitle, setTabTitle, useEmbeddr, setUseEmbe
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium">TunnelVision Proxy</div>
-              <div className="text-sm text-gray-400">Open URLs via Embeddr proxy</div>
+              <div className="text-sm text-gray-400">Open URLs via proxy</div>
             </div>
             <label className="inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked={tvUseProxy} onChange={(e) => setTvUseProxy(e.target.checked)} />
@@ -88,6 +94,63 @@ export default function Settings({ tabTitle, setTabTitle, useEmbeddr, setUseEmbe
               </div>
             </label>
           </div>
+
+          {tvUseProxy && (
+            <div className="space-y-4 border border-gray-800 rounded-lg p-4 bg-gray-900/50">
+              <div className="text-sm text-gray-400">Choose TunnelVision proxy</div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  onClick={() => setTvProxyType && setTvProxyType('embeddr')}
+                  className={`text-left p-3 rounded-md border ${tvProxyType === 'embeddr' ? 'border-[#5E17EB] bg-[#5E17EB]/10' : 'border-gray-800 bg-gray-900'}`}
+                >
+                  <div className="font-medium">Embeddr</div>
+                  <div className="text-xs text-gray-400">Recommended for most sites</div>
+                </button>
+                <button
+                  onClick={() => setTvProxyType && setTvProxyType('limestone')}
+                  className={`text-left p-3 rounded-md border ${tvProxyType === 'limestone' ? 'border-[#5E17EB] bg-[#5E17EB]/10' : 'border-gray-800 bg-gray-900'}`}
+                >
+                  <div className="font-medium">Limestone <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 align-middle">BETA</span></div>
+                  <div className="text-xs text-gray-400">Harder to block; may be slower</div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium">Movies Proxy</div>
+              <div className="text-sm text-gray-400">Open movie player via proxy</div>
+            </div>
+            <label className="inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" checked={!!moviesUseProxy} onChange={(e) => setMoviesUseProxy && setMoviesUseProxy(e.target.checked)} />
+              <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:bg-[#5E17EB] transition-colors relative">
+                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${moviesUseProxy ? 'translate-x-5' : ''}`} />
+              </div>
+            </label>
+          </div>
+
+          {moviesUseProxy && (
+            <div className="space-y-4 border border-gray-800 rounded-lg p-4 bg-gray-900/50">
+              <div className="text-sm text-gray-400">Choose movies proxy</div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  onClick={() => setMoviesProxyType && setMoviesProxyType('embeddr')}
+                  className={`text-left p-3 rounded-md border ${moviesProxyType === 'embeddr' ? 'border-[#5E17EB] bg-[#5E17EB]/10' : 'border-gray-800 bg-gray-900'}`}
+                >
+                  <div className="font-medium">Embeddr</div>
+                  <div className="text-xs text-gray-400">Recommended for most players</div>
+                </button>
+                <button
+                  onClick={() => setMoviesProxyType && setMoviesProxyType('limestone')}
+                  className={`text-left p-3 rounded-md border ${moviesProxyType === 'limestone' ? 'border-[#5E17EB] bg-[#5E17EB]/10' : 'border-gray-800 bg-gray-900'}`}
+                >
+                  <div className="font-medium">Limestone <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 align-middle">BETA</span></div>
+                  <div className="text-xs text-gray-400">Harder to block; may be slower</div>
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="flex items-center justify-between">
             <div>

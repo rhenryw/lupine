@@ -1,13 +1,15 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { X } from 'lucide-react';
 
 interface Props {
   tmdbId: number;
   onClose: () => void;
   securlyProtect?: boolean;
+  useProxy?: boolean;
+  proxyType?: 'embeddr' | 'limestone';
 }
 
-export default function MovieModal({ tmdbId, onClose, securlyProtect = false }: Props) {
+export default function MovieModal({ tmdbId, onClose, securlyProtect = false, useProxy = false, proxyType = 'embeddr' }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [provider, setProvider] = useState<'main' | 'ads'>('main');
@@ -15,10 +17,26 @@ export default function MovieModal({ tmdbId, onClose, securlyProtect = false }: 
     const el = iframeRef.current as any;
     el && (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen)?.call(el);
   }
+  function maybeHashTranslate(u: string) { return securlyProtect ? (u.includes('#') ? `${u}&translate.google.com` : `${u}#translate.google.com`) : u; }
+  function buildLimestoneUrl(target: string) {
+    const base = new URL(window.location.href);
+    base.searchParams.set('limestone', target);
+    return base.pathname + '?' + base.searchParams.toString();
+  }
   const mainBase = `https://player.vidify.top/embed/movie/${tmdbId}?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&download=true&logourl=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FLupineVault%2Flupinevault.github.io%40main%2Fassets%2Fimages%2FtinyTitle.png&font=Roboto&fontcolor=5E17EB&fontsize=20&opacity=0.5&primarycolor=3b82f6&secondarycolor=1f2937&iconcolor=ffffff`;
   const adsBase = `https://vidsrc.icu/embed/movie/${tmdbId}`;
   const chosen = provider === 'main' ? mainBase : adsBase;
-  const src = securlyProtect ? (chosen.includes('#') ? `${chosen}&translate.google.com` : `${chosen}#translate.google.com`) : chosen;
+  let src = chosen;
+  if (useProxy) {
+    if (proxyType === 'limestone') {
+      const t = maybeHashTranslate(chosen);
+      src = buildLimestoneUrl(t);
+    } else {
+      src = maybeHashTranslate(`https://embeddr.rhw.one/embed#${encodeURIComponent(chosen)}`);
+    }
+  } else {
+    src = maybeHashTranslate(chosen);
+  }
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80">
       <div ref={containerRef} className="relative w-full h-full md:h-[85vh] md:w-[90vw] rounded-xl overflow-hidden bg-black">

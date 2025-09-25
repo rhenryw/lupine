@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 interface TunnelVisionProps {
   tvUseProxy: boolean;
   isActive: boolean;
   securlyProtect?: boolean;
-  sandstoneProxy?: boolean;
+  tvProxyType?: 'embeddr' | 'limestone';
 }
 
-export default function TunnelVision({ tvUseProxy, isActive, securlyProtect = false, sandstoneProxy = false }: TunnelVisionProps) {
+export default function TunnelVision({ tvUseProxy, isActive, securlyProtect = false, tvProxyType = 'embeddr' }: TunnelVisionProps) {
   const [urlInput, setUrlInput] = useState<string>(() => (typeof window !== 'undefined' ? (localStorage.getItem('tvUrlInput') || '') : ''));
   const [viewerUrl, setViewerUrl] = useState<string>(() => (typeof window !== 'undefined' ? (localStorage.getItem('tvViewerUrl') || '') : ''));
   const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(null);
@@ -26,11 +26,12 @@ export default function TunnelVision({ tvUseProxy, isActive, securlyProtect = fa
   }
   function applyProxy(u: string) {
     const normalized = u;
-    if (sandstoneProxy) {
+    if (!tvUseProxy) return maybeHashTranslate(normalized);
+    if (tvProxyType === 'limestone') {
       const t = maybeHashTranslate(normalized);
       return buildLimestoneUrl(t);
     }
-    const viaEmbeddr = tvUseProxy ? `https://embeddr.rhw.one/embed#${encodeURIComponent(normalized)}` : normalized;
+    const viaEmbeddr = `https://embeddr.rhw.one/embed#${encodeURIComponent(normalized)}`;
     return maybeHashTranslate(viaEmbeddr);
   }
 

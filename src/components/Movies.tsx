@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Play } from 'lucide-react';
 import MovieModal from './MovieModal.tsx';
 
@@ -14,9 +14,9 @@ type TmdbMovie = {
 const TMDB_API_KEY = '2713804610e1e236b1cf44bfac3a7776';
 const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
 
-interface MoviesProps { maxRating?: 'PG' | 'PG-13' | 'R' | 'ALL'; securlyProtect?: boolean }
+interface MoviesProps { maxRating?: 'PG' | 'PG-13' | 'R' | 'ALL'; securlyProtect?: boolean; useProxy?: boolean; proxyType?: 'embeddr' | 'limestone' }
 
-export default function Movies({ maxRating = 'ALL', securlyProtect = false }: MoviesProps) {
+export default function Movies({ maxRating = 'ALL', securlyProtect = false, useProxy = false, proxyType = 'embeddr' }: MoviesProps) {
   const [page, setPage] = useState(1);
   const [movies, setMovies] = useState<TmdbMovie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -138,7 +138,7 @@ export default function Movies({ maxRating = 'ALL', securlyProtect = false }: Mo
       </div>
 
       {selectedId !== null && (
-        <MovieModal tmdbId={selectedId} onClose={() => setSelectedId(null)} securlyProtect={securlyProtect} />
+        <MovieModal tmdbId={selectedId} onClose={() => setSelectedId(null)} securlyProtect={securlyProtect} useProxy={useProxy} proxyType={proxyType} />
       )}
     </section>
   );
