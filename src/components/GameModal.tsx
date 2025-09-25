@@ -7,9 +7,10 @@ interface Props {
   onClose: () => void;
   useEmbeddr?: boolean;
   securlyProtect?: boolean;
+  useSandstone?: boolean;
 }
 
-export default function GameModal({ game, onClose, useEmbeddr = true, securlyProtect = false }: Props) {
+export default function GameModal({ game, onClose, useEmbeddr = true, securlyProtect = false, useSandstone = false }: Props) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -26,8 +27,15 @@ export default function GameModal({ game, onClose, useEmbeddr = true, securlyPro
     ? `https://gamedistro.rhenrywarren.workers.dev/rvvASMiM/${id}/index.html?gd_sdk_referrer_url=https://lupine.red`
     : (game.sourceUrl || '');
   const maybeHashTranslate = (u: string) => (securlyProtect ? (u.includes('#') ? `${u}&translate.google.com` : `${u}#translate.google.com`) : u);
-  const embedUrl = `https://embeddr.rhw.one/embed#${directUrl}`;
-  const src = useEmbeddr ? maybeHashTranslate(embedUrl) : maybeHashTranslate(directUrl);
+  function buildLimestoneUrl(target: string) {
+    const base = new URL(window.location.href);
+    base.searchParams.set('limestone', target);
+    return base.pathname + '?' + base.searchParams.toString();
+  }
+  const embedUrl = `https://embeddr.rhw.one/embed#${encodeURIComponent(directUrl)}`;
+  const base = useEmbeddr ? embedUrl : directUrl;
+  const limestoneUrl = useSandstone ? buildLimestoneUrl(maybeHashTranslate(base)) : null;
+  const src = limestoneUrl || maybeHashTranslate(base);
 
   function requestFullscreen() {
     const el = iframeRef.current as any;

@@ -20,11 +20,18 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [tabTitle, setTabTitle] = useState<string>(() => (typeof window !== 'undefined' ? (localStorage.getItem('tabTitle') || 'LupineVault') : 'LupineVault'));
   const [useEmbeddr, setUseEmbeddr] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('useEmbeddr') === '1' : true));
+  const [proxyEnabled, setProxyEnabled] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('proxyEnabled') === '1' : false));
+  const [proxyType, setProxyType] = useState<'embeddr' | 'limestone'>(() => {
+    if (typeof window === 'undefined') return 'embeddr';
+    const v = localStorage.getItem('proxyType');
+    return v === 'limestone' ? 'limestone' : 'embeddr';
+  });
   const [movieMaxRating, setMovieMaxRating] = useState<'PG' | 'PG-13' | 'R' | 'ALL'>(() => {
     if (typeof window === 'undefined') return 'PG-13';
     const v = localStorage.getItem('movieMaxRating') as any;
     return v === 'PG' || v === 'PG-13' || v === 'R' || v === 'ALL' ? v : 'PG-13';
   });
+  const [useSandstone, setUseSandstone] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('useSandstone') === '1' : false));
   const [tvUseProxy, setTvUseProxy] = useState<boolean>(() => (typeof window !== 'undefined' ? localStorage.getItem('tvUseProxy') === '1' : false));
   const [securlyProtect, setSecurlyProtect] = useState<boolean>(() => {
     if (typeof window === 'undefined') return true;
@@ -207,6 +214,14 @@ function App() {
   }, [useEmbeddr]);
 
   useEffect(() => {
+    try { localStorage.setItem('proxyEnabled', proxyEnabled ? '1' : '0'); } catch {}
+  }, [proxyEnabled]);
+
+  useEffect(() => {
+    try { localStorage.setItem('proxyType', proxyType); } catch {}
+  }, [proxyType]);
+
+  useEffect(() => {
     try { localStorage.setItem('movieMaxRating', movieMaxRating); } catch {}
   }, [movieMaxRating]);
 
@@ -217,6 +232,12 @@ function App() {
   useEffect(() => {
     try { localStorage.setItem('securlyProtect', securlyProtect ? '1' : '0'); } catch {}
   }, [securlyProtect]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('useSandstone', useSandstone ? '1' : '0');
+    } catch {}
+  }, [useSandstone]);
 
   const featuredGame = useMemo(() => {
     if (filteredGames.length === 0) return null;
@@ -231,9 +252,28 @@ function App() {
       case 'movies':
         return <Movies maxRating={movieMaxRating} />;
       case 'tunnel':
-        return <TunnelVision tvUseProxy={tvUseProxy} isActive={activeSection === 'tunnel'} />;
+        return <TunnelVision tvUseProxy={proxyEnabled} sandstoneProxy={proxyEnabled && proxyType === 'limestone'} isActive={activeSection === 'tunnel'} />;
       case 'settings':
-        return <Settings tabTitle={tabTitle} setTabTitle={setTabTitle} useEmbeddr={useEmbeddr} setUseEmbeddr={setUseEmbeddr} movieMaxRating={movieMaxRating} setMovieMaxRating={setMovieMaxRating} tvUseProxy={tvUseProxy} setTvUseProxy={setTvUseProxy} securlyProtect={securlyProtect} setSecurlyProtect={setSecurlyProtect} />;
+        return (
+          <Settings
+            tabTitle={tabTitle}
+            setTabTitle={setTabTitle}
+            useEmbeddr={useEmbeddr}
+            setUseEmbeddr={setUseEmbeddr}
+            useSandstone={useSandstone}
+            setUseSandstone={setUseSandstone}
+            proxyEnabled={proxyEnabled}
+            setProxyEnabled={setProxyEnabled}
+            proxyType={proxyType}
+            setProxyType={setProxyType}
+            movieMaxRating={movieMaxRating}
+            setMovieMaxRating={setMovieMaxRating}
+            tvUseProxy={tvUseProxy}
+            setTvUseProxy={setTvUseProxy}
+            securlyProtect={securlyProtect}
+            setSecurlyProtect={setSecurlyProtect}
+          />
+        );
       default:
         return (
           <>
@@ -270,8 +310,9 @@ function App() {
         <GameModal 
           game={selectedGame}
           onClose={handleCloseModal}
-          useEmbeddr={useEmbeddr}
+          useEmbeddr={proxyEnabled && proxyType === 'embeddr'}
           securlyProtect={securlyProtect}
+          useSandstone={proxyEnabled && proxyType === 'limestone'}
         />
       )}
       {selectedMovieId !== null && (

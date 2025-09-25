@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sandstone Proxy</title>
+    <style>
+      html, body, iframe { height: 100%; width: 100%; margin: 0; padding: 0; background: #000; }
+      #root { position: fixed; inset: 0; }
+      #loading { position: absolute; inset: 0; display: grid; place-items: center; color: #9ca3af; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div id="loading">Loading…</div>
+    </div>
+    <script src="https://github.com/rhenryw/limestone/releases/download/1.0/limestone.js"></script>
+    <script>
+      (function () {
+        function getTargetFromHash() {
+          var h = location.hash || '';
+          if (h.startsWith('#')) h = h.slice(1);
+          if (!h) return null;
+          try { return decodeURIComponent(h); } catch { return h; }
+        }
+
+        function boot(url) {
+          try {
+            if (sandstone.libcurl && sandstone.libcurl.set_websocket) {
+              try {
+                sandstone.libcurl.set_websocket('wss://anura.pro');
+              } catch {}
+            }
+            var frame = new sandstone.controller.ProxyFrame(document.getElementById('root'));
+            if (frame && frame.load) frame.load(url);
+            else if (frame && frame.navigate) frame.navigate(url);
+            else location.href = url;
+          } catch (e) {
+            console.error(e);
+            document.getElementById('loading').textContent = 'Failed to load';
+          }
+        }
+
+        var initial = getTargetFromHash();
+        if (initial) boot(initial);
+        window.addEventListener('hashchange', function () {
+          var u = getTargetFromHash();
+          if (u) boot(u);
+        });
+      })();
+    </script>
+  </body>
+  </html>
+
+

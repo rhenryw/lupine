@@ -5,6 +5,12 @@ interface SettingsProps {
   setTabTitle: (v: string) => void;
   useEmbeddr: boolean;
   setUseEmbeddr: (v: boolean) => void;
+  useSandstone?: boolean;
+  setUseSandstone?: (v: boolean) => void;
+  proxyEnabled?: boolean;
+  setProxyEnabled?: (v: boolean) => void;
+  proxyType?: 'embeddr' | 'limestone';
+  setProxyType?: (v: 'embeddr' | 'limestone') => void;
   movieMaxRating: 'PG' | 'PG-13' | 'R' | 'ALL';
   setMovieMaxRating: (v: 'PG' | 'PG-13' | 'R' | 'ALL') => void;
   tvUseProxy: boolean;
@@ -13,7 +19,7 @@ interface SettingsProps {
   setSecurlyProtect: (v: boolean) => void;
 }
 
-export default function Settings({ tabTitle, setTabTitle, useEmbeddr, setUseEmbeddr, movieMaxRating, setMovieMaxRating, tvUseProxy, setTvUseProxy, securlyProtect, setSecurlyProtect }: SettingsProps) {
+export default function Settings({ tabTitle, setTabTitle, useEmbeddr, setUseEmbeddr, useSandstone = false, setUseSandstone, proxyEnabled = false, setProxyEnabled, proxyType = 'embeddr', setProxyType, movieMaxRating, setMovieMaxRating, tvUseProxy, setTvUseProxy, securlyProtect, setSecurlyProtect }: SettingsProps) {
   const options: { key: 'PG' | 'PG-13' | 'R' | 'ALL'; label: string }[] = [
     { key: 'PG', label: 'PG' },
     { key: 'PG-13', label: 'PG-13' },
@@ -37,16 +43,38 @@ export default function Settings({ tabTitle, setTabTitle, useEmbeddr, setUseEmbe
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium">Use Embeddr</div>
-              <div className="text-sm text-gray-400">Open games via Embeddr proxy</div>
+              <div className="font-medium">Enable Proxy</div>
+              <div className="text-sm text-gray-400">Route games and websites through a proxy</div>
             </div>
             <label className="inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" checked={useEmbeddr} onChange={(e) => setUseEmbeddr(e.target.checked)} />
+              <input type="checkbox" className="sr-only peer" checked={!!proxyEnabled} onChange={(e) => setProxyEnabled && setProxyEnabled(e.target.checked)} />
               <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:bg-[#5E17EB] transition-colors relative">
-                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${useEmbeddr ? 'translate-x-5' : ''}`} />
+                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${proxyEnabled ? 'translate-x-5' : ''}`} />
               </div>
             </label>
           </div>
+
+          {proxyEnabled && (
+            <div className="space-y-4 border border-gray-800 rounded-lg p-4 bg-gray-900/50">
+              <div className="text-sm text-gray-400">Choose proxy</div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  onClick={() => setProxyType && setProxyType('embeddr')}
+                  className={`text-left p-3 rounded-md border ${proxyType === 'embeddr' ? 'border-[#5E17EB] bg-[#5E17EB]/10' : 'border-gray-800 bg-gray-900'}`}
+                >
+                  <div className="font-medium">Embeddr</div>
+                  <div className="text-xs text-gray-400">Works best for most games</div>
+                </button>
+                <button
+                  onClick={() => setProxyType && setProxyType('limestone')}
+                  className={`text-left p-3 rounded-md border ${proxyType === 'limestone' ? 'border-[#5E17EB] bg-[#5E17EB]/10' : 'border-gray-800 bg-gray-900'}`}
+                >
+                  <div className="font-medium">Limestone <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 align-middle">BETA</span></div>
+                  <div className="text-xs text-gray-400">Harder to block; Embeddr generally works better</div>
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="flex items-center justify-between">
             <div>
