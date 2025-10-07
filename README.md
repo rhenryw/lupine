@@ -1,6 +1,7 @@
 # Lupine, a revolutionary game system
 
 <td><a target="_blank" href="https://discord.gg/XygZfmMM86"><img src="https://dcbadge.limes.pink/api/server/XygZfmMM86" alt="Join Discord!" /></a></td>
+
 [![badge](https://data.jsdelivr.com/v1/package/gh/rhenryw/lupine/badge)](https://www.jsdelivr.com/package/gh/rhenryw/lupine)
 
 
