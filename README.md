@@ -2,6 +2,8 @@
 
 <td><a target="_blank" href="https://discord.gg/XygZfmMM86"><img src="https://dcbadge.limes.pink/api/server/XygZfmMM86" alt="Join Discord!" /></a></td>
 
+[![badge](https://data.jsdelivr.com/v1/package/gh/rhenryw/lupine/badge)](https://www.jsdelivr.com/package/gh/rhenryw/lupine)
+
 
 Using NPM, Vite, HTML, CSS, JavaScript, and TypeScript you can have a fully 100% unblocked website with proxy, movies, and over 21,000 games!
 
